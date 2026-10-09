@@ -18,6 +18,11 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      # Chaquopy requires a host Python 3.11 interpreter during APK builds.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
       - name: Install Android SDK
         run: |
           set -e
