@@ -74,6 +74,8 @@ def start_titan(files_dir: str) -> str:
 
             os.environ["TITAN_HOME"] = str(home)
             os.environ["TITAN_OPEN_BROWSER"] = "0"
+            # Keep the engine port aligned with MainActivity WebView and wait_ready.
+            os.environ["TITAN_PORT"] = "5000"
             os.environ["TMPDIR"] = str(home / "cache" / "tmp")
             os.environ["TEMP"] = str(home / "cache" / "tmp")
             os.environ["TMP"] = str(home / "cache" / "tmp")
