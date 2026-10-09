@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.titan.v75"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 34
         versionCode = 75
         versionName = "75.0-full-engine"
