@@ -1,4 +1,4 @@
-name: Build Full TITAN APK
+name: Build TAI Android APK
 
 on:
   workflow_dispatch:
@@ -46,7 +46,7 @@ jobs:
           if [ ! -f app/src/main/python/TITAN_PRO_V75_PWA.py ]; then
             echo "Downloading TITAN_PRO_V75_PWA.py ..."
             curl -fsSL -o app/src/main/python/TITAN_PRO_V75_PWA.py \
-              "https://raw.githubusercontent.com/ehsanrahmanii-code/TITAN-Pro-Android/main/app/src/main/python/TITAN_PRO_V75_PWA.py"
+              "https://raw.githubusercontent.com/ehsanrahmanii-code/TITAN-V75-Full-Android/main/app/src/main/python/TITAN_PRO_V75_PWA.py"
           fi
           wc -c app/src/main/python/TITAN_PRO_V75_PWA.py
           test -s app/src/main/python/TITAN_PRO_V75_PWA.py
@@ -74,9 +74,15 @@ jobs:
           GRADLE_OPTS: -Xmx4g -Dorg.gradle.daemon=false
         run: ./gradlew assembleDebug --stacktrace --no-daemon
 
+      - name: Name APK TAI
+        run: |
+          set -e
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          cp "$APK" "app/build/outputs/apk/debug/TAI.apk"
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: titan-v75-full-debug
-          path: app/build/outputs/apk/debug/*.apk
+          name: TAI-Android-APK
+          path: app/build/outputs/apk/debug/TAI.apk
           if-no-files-found: error
