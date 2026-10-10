@@ -46,7 +46,7 @@ jobs:
           if [ ! -f app/src/main/python/TITAN_PRO_V75_PWA.py ]; then
             echo "Downloading TITAN_PRO_V75_PWA.py ..."
             curl -fsSL -o app/src/main/python/TITAN_PRO_V75_PWA.py \
-              "https://raw.githubusercontent.com/ehsanrahmanii-code/TITAN-V75-Full-Android/main/app/src/main/python/TITAN_PRO_V75_PWA.py"
+              "https://raw.githubusercontent.com/ehsanrahmanii-code/TITAN-Pro-Android/main/app/src/main/python/TITAN_PRO_V75_PWA.py"
           fi
           wc -c app/src/main/python/TITAN_PRO_V75_PWA.py
           test -s app/src/main/python/TITAN_PRO_V75_PWA.py
