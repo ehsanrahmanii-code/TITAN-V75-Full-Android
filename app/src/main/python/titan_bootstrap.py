@@ -7,6 +7,7 @@ import os
 import sys
 import threading
 import time
+import traceback
 import urllib.request
 from pathlib import Path
 
@@ -14,6 +15,22 @@ _engine_mod = None
 _started = False
 _lock = threading.Lock()
 _last_error = ""
+_error_log = None
+
+
+def _record_error(label: str) -> str:
+    global _last_error
+    details = traceback.format_exc()
+    _last_error = f"{label}:\n{details}"
+    try:
+        if _error_log is not None:
+            _error_log.parent.mkdir(parents=True, exist_ok=True)
+            with _error_log.open("a", encoding="utf-8") as fp:
+                fp.write("\n" + "=" * 70 + "\n" + _last_error + "\n")
+    except Exception:
+        pass
+    print(_last_error)
+    return _last_error
 
 
 def _patch_source(text: str, home: Path) -> str:
@@ -52,12 +69,13 @@ def _patch_source(text: str, home: Path) -> str:
 
 def start_titan(files_dir: str) -> str:
     """Start the real TITAN Flask engine. Returns status string."""
-    global _engine_mod, _started, _last_error
+    global _engine_mod, _started, _last_error, _error_log
     with _lock:
         if _started:
             return "already_started"
         try:
             home = Path(files_dir) / "LLL"
+            _error_log = home / "data" / "android_engine_error.log"
             for sub in (
                 home,
                 home / "data",
@@ -110,17 +128,14 @@ def start_titan(files_dir: str) -> str:
                     except TypeError:
                         fn()
                 except Exception as exc:
-                    global _last_error
-                    _last_error = str(exc)
-                    print("TITAN run_titan error:", exc)
+                    _record_error("TITAN run_titan error")
 
             threading.Thread(target=_run, name="titan-flask", daemon=True).start()
             _started = True
             return "started"
         except Exception as exc:
-            _last_error = str(exc)
-            print("TITAN bootstrap error:", exc)
-            raise
+            _record_error("TITAN bootstrap error")
+            raise RuntimeError(_last_error) from exc
 
 
 def wait_ready(url: str = "http://127.0.0.1:5000/health", timeout: float = 180.0) -> bool:
